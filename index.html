@@ -2,41 +2,62 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Arduino Steuerung</title>
+  <title>Arduino Sensordaten</title>
   <style>
     body {
-      font-family: sans-serif;
-      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
       padding: 20px;
     }
-    button, a.button {
-      display: inline-block;
-      margin: 10px;
-      padding: 12px 24px;
-      font-size: 16px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      text-decoration: none;
-      cursor: pointer;
+    h1 {
+      color: #333;
     }
-    a.button:hover {
-      background-color: #45a049;
+    .datenfeld {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+    .wert {
+      font-size: 1.2em;
+      margin: 5px 0;
     }
   </style>
 </head>
 <body>
-  <h1>🌡️ Arduino Klimasteuerung</h1>
-  <p>Steuere dein System oder zeige aktuelle CSV-Daten an:</p>
+  <h1>🌡️ Arduino Sensordaten</h1>
+  <div class="datenfeld" id="daten">
+    <div class="wert">Lade Daten...</div>
+  </div>
 
-  <a class="button" href="http://192.168.178.50/log" target="_blank">📊 CSV-Daten anzeigen</a>
-  <a class="button" href="http://192.168.178.50/led/on">💡 LED AN</a>
-  <a class="button" href="http://192.168.178.50/led/off">💡 LED AUS</a>
+  <script>
+    async function ladeDaten() {
+      try {
+        const response = await fetch("https://dein-server.de/api/daten.json"); // <-- Hier deine URL einfügen
+        const data = await response.json();
 
-  <p style="margin-top: 40px; font-size: 0.9em; color: gray;">
-    Hinweis: Diese Seite funktioniert nur, wenn du im selben WLAN bist wie dein Arduino.
-  </p>
+        document.getElementById("daten").innerHTML = `
+          <div class="wert">🌡️ Temperatur innen: <strong>${data.temp_innen} °C</strong></div>
+          <div class="wert">💧 Luftfeuchtigkeit innen: <strong>${data.hum_innen} %</strong></div>
+          <div class="wert">🌬️ VPD innen: <strong>${data.vpd_innen}</strong></div>
+          <div class="wert">🌡️ Temperatur außen: <strong>${data.temp_aussen} °C</strong></div>
+          <div class="wert">💧 Luftfeuchtigkeit außen: <strong>${data.hum_aussen} %</strong></div>
+          <div class="wert">🌬️ VPD außen: <strong>${data.vpd_aussen}</strong></div>
+          <div class="wert">🔥 Heizung: <strong>${data.heizung === "1" ? "Ein" : "Aus"}</strong></div>
+          <div class="wert">❄️ Kühlung: <strong>${data.kuehlung === "1" ? "Ein" : "Aus"}</strong></div>
+          <div class="wert">🕒 Zeit: <strong>${data.zeit}</strong></div>
+          <div class="wert">📅 Datum: <strong>${data.datum}</strong></div>
+          <div class="wert">⚠️ Fehler: <strong>${data.fehler}</strong></div>
+        `;
+      } catch (error) {
+        document.getElementById("daten").innerHTML = `<div class="wert">❌ Fehler beim Laden der Daten</div>`;
+        console.error("Fehler beim Abrufen:", error);
+      }
+    }
+
+    ladeDaten();
+    setInterval(ladeDaten, 5000); // alle 5 Sekunden neu laden
+  </script>
 </body>
 </html>
