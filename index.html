@@ -1,13 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Arduino Steuerung</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    button, a.button {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    a.button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
-<body style="font-family:sans-serif; text-align:center;">
-  <h1>🤖 Arduino Websteuerung</h1>
-  <button onclick="fetch('http://192.168.178.50/led/on')">LED AN</button>
-  <button onclick="fetch('http://192.168.178.50/led/off')">LED AUS</button>
+<body>
+  <h1>🌡️ Arduino Klimasteuerung</h1>
+  <p>Steuere dein System oder zeige aktuelle CSV-Daten an:</p>
+
+  <a class="button" href="http://192.168.178.50/log" target="_blank">📊 CSV-Daten anzeigen</a>
+  <a class="button" href="http://192.168.178.50/led/on">💡 LED AN</a>
+  <a class="button" href="http://192.168.178.50/led/off">💡 LED AUS</a>
+
+  <p style="margin-top: 40px; font-size: 0.9em; color: gray;">
+    Hinweis: Diese Seite funktioniert nur, wenn du im selben WLAN bist wie dein Arduino.
+  </p>
 </body>
 </html>
-
